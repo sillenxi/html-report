@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>报告Vue版</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "PingFang SC";
+    }
+
+    .bg-header {
+      display: block;
+      width: 100%;
+    }
+
+    .block-top {
+      background: #fff;
+      border-radius: 5px;
+      padding: 12px 15px;
+      margin: -75px 15px 15px 15px;
+      box-shadow: 0px 0px 4px 0px rgba(200, 200, 200, 0.6);
+      position: absolute;
+      z-index: 9;
+      left: 0px;
+      right: 0px;
+    }
+
+    .block {
+      background: #fff;
+      border-radius: 5px;
+      padding: 12px 15px;
+      margin: 35px 15px 0px 15px;
+      box-shadow: 0px 0px 4px 0px rgba(200, 200, 200, 0.6);
+    }
+
+    .block+.block {
+      margin-top: 20px;
+    }
+
+    .block-header {
+      color: #3f5779;
+      font-size: 16px;
+      margin-left: 6px;
+    }
+
+    .progress {
+      display: inline-block;
+      width: 130px;
+      position: relative;
+      height: 10px;
+      border-radius: 5px;
+      background: #e1e2e3;
+    }
+
+    .progress::before {
+      content: '';
+      display: block;
+      top: 0;
+      left: 0;
+      width: var(--progress);
+      height: 100%;
+      border-radius: inherit;
+      z-index: 1;
+      background: var(--color);
+    }
+
+    table {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      border-top: 1px solid #39506f;
+      border-left: 1px solid #39506f;
+      margin: 12px 0px;
+      padding: 8px;
+    }
+
+    th {
+      background: #39506f;
+      color: #fff;
+      margin: 6px;
+      box-sizing: border-box;
+      border: none;
+      border-right: 1px solid #39506f;
+      border-bottom: 1px solid #39506f;
+      font-size: 14px;
+    }
+
+    td {
+      color: #666;
+      font-size: 11px;
+      box-sizing: border-box;
+      border: none;
+      border-right: 1px solid #39506f;
+      border-bottom: 1px solid #39506f;
+      padding: 6px;
+      text-align: justify;
+    }
+
+    .person {
+      display: flex;
+      align-items: center;
+    }
+
+    .headphoto {
+      width: 62px;
+      height: 62px;
+      border-radius: 100%;
+      border: 1px solid #39506f;
+    }
+
+    .right {
+      margin-left: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .name {
+      font-size: 16px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .medal {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .grade {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .des {
+      font-size: 13px;
+      color: #999;
+      margin-left: 2px;
+      margin-right: 20px;
+    }
+
+    .titles {
+      display: flex;
+      align-items: center;
+    }
+
+    .content {
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px;
+      line-height: 24px;
+    }
+
+    .schedule {
+      margin-top: 10px;
+    }
+
+    .aims {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .persent {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .fankui {
+      margin: 12px 0px;
+      display: block;
+      position: relative;
+
+    }
+
+    .question {
+      background-color: #39506f;
+      padding: 6px 15px;
+      font-size: 14px;
+      color: #fff;
+      border-radius: 4px;
+      margin-right: 15px;
+    }
+
+    .xiaoren {
+      position: absolute;
+      bottom: -1px;
+      right: 0px;
+    }
+
+    .bottom {
+      margin: 30px 15px 30px 15px;
+      font-size: 9px;
+      color: #999;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <img class="bg-header" src="./images/bg-header.png" alt="标题" />
+    <div class="block-top">
+      <div class="person">
+        <div class="headphoto">
+          <img src="./images/photo.png" alt="头像" width="62px" height="62px">
+        </div>
+        <div class="right">
+          <div class="name">{{name}}</div>
+          <div class="medal">
+            <div v-for='medal,index in medals' :key='index' class="grade">
+              <img :src="medalImgs[medal]" width="16px" height="16px">
+              <div class="des">{{medal}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="titles">
+        <img src="./images/aims.png" width="18px" height="18px">
+        <div class="block-header">目标</div>
+      </div>
+      <div class="content">{{target}}</div>
+      <div class="schedule">
+        <span class="aims">目标自评完成度：</span>
+        <div :style="'--progress:' + selfProgress + '%;--color:#39506f;'" class="progress"></div>
+        <span class="persent">{{selfProgress}}%</span>
+      </div>
+      <div class="schedule">
+        <span class="aims">目标他评完成度：</span>
+        <div :style="'--progress:' + otherProgress + '%;--color:#af8d53'" class="progress"></div>
+        <span class="persent">{{otherProgress}}%</span>
+      </div>
+      <div class="content">{{remark}}</div>
+    </div>
+    <div class="block">
+      <div class="titles">
+        <img src="./images/record.png" width="18px" height="18px">
+        <div class="block-header">学习记录</div>
+      </div>
+      <div class="content">作业提交：{{workComplete}}<br>作业准时：{{order}}/{{peopleNum}}</div>
+    </div>
+    <div class="block">
+      <div class="titles">
+        <img src="./images/tezhi.png" width="18px" height="18px">
+        <div class="block-header">个人特质</div>
+      </div>
+      <table border="0" frame="void" rules="none">
+        <tr>
+          <th>个人特质</th>
+          <th>发展建议</th>
+        </tr>
+        <tr v-for='row, index in tableData' :key='index'>
+          <td>{{row.one}}</td>
+          <td>{{row.two}}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="block">
+      <div class="titles">
+        <img src="./images/shouhuo.png" width="18px" height="18px">
+        <div class="block-header">自我收获</div>
+      </div>
+      <div class="content">想法：{{idea}}</div>
+      <div class="content">团队：{{team}}</div>
+      <div class="content">收获：{{gains}}</div>
+    </div>
+    <div class="block">
+      <div class="titles">
+        <img src="./images/fankui.png" width="18px" height="18px">
+        <div class="block-header">上级反馈</div>
+      </div>
+      <block v-for='question, index in questions' :key='index'>
+        <div class="fankui">
+          <div class="question">{{(index+1) + '.' + question.q}}</div>
+          <img class="xiaoren" src="./images/xiaoren.png" width="26px" height="43px">
+        </div>
+        <div class="content">{{question.a}}</div>
+      </block>
+    </div>
+    <div class="bottom">※ 本报告是基于一个月智能教练运用后的数据反馈，只反映学员在执行本次目标过程中形为倾向，仅供参考</div>
+  </div>
+  <script type="text/javascript">
+    const medalImgs = {
+      '迅捷白银': './images/baiyin.png',
+      '疾风黄金': './images/hj.png',
+      '热血青铜': './images/qt.png',
+      '自律之星': './images/xx.png',
+      '超级学霸': './images/xb.png',
+      '一言顶九鼎': './images/ding.png',
+    }
+    const data = {
+      name: '汪杰',
+      medals: [],
+      target: '6月销量比5月增加300台',
+      selfProgress: '20',
+      otherProgress: '80',
+      workComplete: '5/5',
+      order: '2',
+      peopleNum: '45',
+      tableData: [],
+      idea: '连锁门店要货有一定问题，货源跟不上。日常销售运转很有必要，能增加导购销售激情。',
+      team: '以身作则,做好榜样,为自己的团队负责.多学习应对竞品的知识,带领团队一起努立,提升业绩',
+      gains: '明确自己的目标，做出规划，落实到地明确自己的目标，做出规划，落实到地明确自己的目标，做出规划，落实到地',
+      questions: [
+        {
+          q: '员工经过智能教练后有什么改变？',
+          a: '会主动做对销量有帮助的动作，目标跟进频率较高。',
+        },
+        {
+          q: '此目标完成的过程对部门或公司有哪些积极的影响？',
+          a: '带动团队一起努立，正能量影响力大。',
+        },
+        {
+          q: '您对员工后面的发展有什么期待？',
+          a: '不断地提升管理能力 ',
+        },
+      ],
+    }
+
+    //目标评语的判断
+    var isExcellent = data.otherProgress - data.selfProgress;
+    if (isExcellent >= 0 && isExcellent < 16) {
+      data.remark = "恭喜您，关于您的目标完成度，上下级达成一致意见，合作关系比较和谐！";
+    }
+    else if (isExcellent > 15) {
+      data.remark = "你比你想象的要好哦，要对自己要多一些信心，增加与上级的沟通，寻求对工作结果的反馈。";
+    }
+    else {
+      data.remark = "您对于领导的期待不明确，需要及时与领导汇报工作成果，界定更清晰的目标和成果";
+    }
+
+    //发展建议第三行
+    var item3 = {};
+    if (data.order < 23) {
+      item3 = { one: '有良好的秩序感、务时的，可靠的，快速响应', two: '提升灵活性；当面对变化时，增加个人弹性，需要勇于尝试新的工作方式' };
+    }
+    else {
+      item3 = { one: '不拘小节，思维跳跃的', two: '通过规划具体的行动，强化时间个人管理，提升个人贡献与产出' };
+    }
+    data.tableData[2] = item3;
+
+    //发展建议第二行
+    var item2 = {};
+    var targetComplate = data.selfProgress * 0.7 + data.otherProgress * 0.3
+    if (targetComplate > 56) {
+      item2 = { one: '以目标导向，专注于事务的执行', two: '设定更具有挑战性的目标，建议增加对团队的关注,给予及时的激励和反馈,激发员工潜能' }
+    }
+    else {
+      item2 = { one: '善于配合与协调,支持,友好的', two: '目标设置难度较高,提升目标可行性评估,做好时间管理' }
+    }
+    data.tableData[1] = item2;
+
+    //发展建议第一行
+    var item1 = {}
+    if (data.gains.length > 23) {
+      item1 = { one: '具体，关注细节，善于表达与沟通', two: '在人际互动增加对他人的关注，多倾听他人的想法' }
+    }
+    else {
+      item1 = { one: '思考的，安静的，低调的', two: '增加个人影响力，适时表达个人观点，促进与他人的合作' }
+    }
+    data.tableData[0] = item1;
+
+    //勋章等级
+    var grade1 = []
+    if (data.order < 23 && targetComplate > 56 && data.gains.length > 23) {
+      grade1.push('疾风黄金')
+    } else if ((data.order < 23 && targetComplate > 56) || (targetComplate > 56 && data.gains.length > 23) || (data.order < 23 && data.gains.length > 23)) {
+      grade1.push('迅捷白银')
+    } else if (data.order < 23 || targetComplate > 56 || data.gains.length > 23) {
+      grade1.push('热血青铜')
+    } else { }
+
+    if (targetComplate > 56) {
+      grade1.push('一言鼎九鼎')
+    }
+
+    if (data.gains.length > 23) {
+      grade1.push('超级学霸')
+    } else { }
+
+    if (data.order < 23) {
+      grade1.push('自律之星')
+    }
+    data.medals = grade1;
+
+    const app = new Vue({
+      el: '#app',
+      data,
+    })
+  </script>
+</body>
+
+</html>
